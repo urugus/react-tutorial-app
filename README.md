@@ -3,6 +3,7 @@
 
 
 # メモ
+## 初期設定
 - [記事](https://zenn.dev/roiban/articles/473f9cbf2b793a) は古いためエラーが出る
   -> [React v18 からは createRoot を使ってアプリを出力する root になるオブジェクトを作成する必要がある](https://chaika.hatenablog.com/entry/2022/05/24/083000)
 

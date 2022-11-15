@@ -119,10 +119,16 @@ const Game = () => {
     )
   })
 
+  const reset = (
+    <button onClick={( () => window.location.reload() )}>Reset</button>
+  )
+
+
   return (
     <div className="game">
       <div className="game-board">
         <Board squares={current.squares} onClick={handleClick} />
+        <div className="reset-button">{reset}</div>
       </div>
       <div className="game-info">
         <div>{status}</div>

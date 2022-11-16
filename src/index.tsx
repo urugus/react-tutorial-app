@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { Repeat } from 'typescript-tuple';
@@ -60,6 +60,7 @@ type GameState = {
 }
 
 const Game = () => {
+  const [time, setTime] = useState(0)
   const [state, setState] = useState<GameState>({
     history: [
       {
@@ -72,9 +73,23 @@ const Game = () => {
 
   const current = state.history[state.stepNumber]
   const winner = calculateWinner(current.squares)
+  const isPlaying = !winner && state.stepNumber !== 0 && state.history.length !== 10
+
+  useEffect(() => {
+    let interval: number
+    if (isPlaying) {
+      interval = window.setInterval(() => {
+        setTime((prev) => prev + 1)
+      }, 1000)
+    }
+    return () => {
+      window.clearInterval(interval)
+    }
+  })
+
   let status: string
   if (winner) {
-    status = `WInner: ${winner}`
+    status = `Winner: ${winner}`
   } else {
     status = `Next Player: ${current.xIsNext ? 'X' : 'O'}`
   }
@@ -110,6 +125,9 @@ const Game = () => {
     }))
   }
 
+  const timer = (
+    <time>経過時間: {time}</time>
+  )
   const moves = state.history.map((step, move) => {
     const desc = move > 0 ? `Go to move #${move}` : 'Go to start'
     return (
@@ -119,14 +137,20 @@ const Game = () => {
     )
   })
 
+  const resetState = () => {
+    setTime(0)
+    window.location.reload()
+  }
+
   const reset = (
-    <button onClick={( () => window.location.reload() )}>Reset</button>
+    <button onClick={resetState}>Reset</button>
   )
 
 
   return (
     <div className="game">
       <div className="game-board">
+        <div className="timer">{timer}</div>
         <Board squares={current.squares} onClick={handleClick} />
         <div className="reset-button">{reset}</div>
       </div>

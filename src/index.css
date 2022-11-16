@@ -50,5 +50,9 @@ ol, ul {
 }
 
 .reset-button {
-  margin: 20px
+  margin: 20px;
+}
+
+.timer {
+  margin-bottom: 10px;
 }

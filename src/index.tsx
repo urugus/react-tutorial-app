@@ -85,7 +85,7 @@ const Game = () => {
     return () => {
       window.clearInterval(interval)
     }
-  })
+  }, [isPlaying])
 
   let status: string
   if (winner) {

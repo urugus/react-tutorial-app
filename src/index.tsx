@@ -56,6 +56,7 @@ type Step = {
 
 type GameState = {
   readonly history: readonly Step[]
+  readonly isPlaying: boolean,
   readonly stepNumber: number
 }
 
@@ -68,16 +69,17 @@ const Game = () => {
         xIsNext: true
       }
     ],
+    isPlaying: false,
     stepNumber: 0,
   })
 
   const current = state.history[state.stepNumber]
   const winner = calculateWinner(current.squares)
-  const isPlaying = !winner && state.stepNumber !== 0 && state.history.length !== 10
+  // const isPlaying = !winner && state.stepNumber !== 0 && state.history.length !== 10
 
   useEffect(() => {
     let interval: number
-    if (isPlaying) {
+    if (state.isPlaying) {
       interval = window.setInterval(() => {
         setTime((prev) => prev + 1)
       }, 1000)
@@ -85,17 +87,16 @@ const Game = () => {
     return () => {
       window.clearInterval(interval)
     }
-  }, [isPlaying])
+  }, [state.isPlaying])
 
-  let status: string
-  if (winner) {
-    status = `Winner: ${winner}`
-  } else {
-    status = `Next Player: ${current.xIsNext ? 'X' : 'O'}`
-  }
+  const status = winner ? `Winner: ${winner}` : `Next Player: ${current.xIsNext ? 'X' : 'O'}`
 
   const handleClick = (i: number) => {
     if (winner || current.squares[i]) {
+      setState(prev => ({
+        ...prev,
+        isPlaying: false,
+      }))
       return
     }
 
@@ -108,14 +109,21 @@ const Game = () => {
       }
     })(current)
 
-    setState(({ history, stepNumber }) => {
+    setState(({ history, isPlaying, stepNumber }) => {
       const newHistory = history.slice(0, stepNumber + 1).concat(next)
 
       return {
         history: newHistory,
+        isPlaying: history.length !== 9,
         stepNumber: newHistory.length - 1
       }
     })
+    if (calculateWinner(next.squares)) {
+      setState(prev => ({
+        ...prev,
+        isPlaying: false
+      }))
+    }
   }
 
   const jumpTo = (move: number) => {
